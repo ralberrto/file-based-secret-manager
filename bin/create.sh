@@ -37,6 +37,9 @@ else
     if [ -z "$OUTPUTFILE" ] ; then
        echo 'error: there must be a child attribute called "filename" under "shown"'
        exit 1
+    elif [ "${OUTPUTFILE%%/*}" == "templates" ] ; then
+       echo 'error: "templates" directory is reserverved for templates'
+       exit 1
     fi
     
     if ! jq -e .shown,.hidden &>/dev/null < $INPUTFILE ; then
