@@ -5,7 +5,7 @@ ISNAME=""
 ISUSER=""
 COMPACT=""
 ATTRIBUTE_FILTER=""
-ROOTDIR=/home/alberto/passwd
+FBSMROOTDIR=${FBSMROOTDIR:-/home/alberto/passwd}
 
 function usage
 {
@@ -56,4 +56,4 @@ FILTER="" CENSOR=' | map(.content = "XXXXXXXXXXXX")'
 [ -n "$ISNAME" ] && ATTRIBUTE_FILTER=$ATTRIBUTE_FILTER' | map(select(.name | contains("'"$NAME"'")))'
 [ -n "$ISUSER" ] && ATTRIBUTE_FILTER=$ATTRIBUTE_FILTER' | map(select(.subject | ascii_downcase | contains("'"$USER"'")))'
 
-bash -c "find $ROOTDIR -name \"*.json\" -type f -not -path \"$ROOTDIR/templates/*\" -exec cat {} \; | jq -s ."\'"$ATTRIBUTE_FILTER$FILTER$CENSOR"\'
+bash -c "find $FBSMROOTDIR -name \"*.json\" -type f -not -path \"$FBSMROOTDIR/templates/*\" -exec cat {} \; | jq -s ."\'"$ATTRIBUTE_FILTER$FILTER$CENSOR"\'

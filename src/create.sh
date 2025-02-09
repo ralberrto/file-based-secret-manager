@@ -1,7 +1,8 @@
 #!/bin/bash
 
 CLEANUP=true
-ROOTDIR='/home/alberto/passwd'
+FBSMROOTDIR=${FBSMROOTDIR:-/home/alberto/passwd}
+FBSMRECIPIENT=${FBSMRECIPIENT:-rafaellarios@eclipso.eu}
 
 function usage
 {
@@ -48,15 +49,15 @@ else
     fi
 
     [ $OUTPUTFILE != ${OUTPUTFILE##*/} ] && \
-    [ $(readlink -f ${OUTPUTFILE%/*}) != $(readlink -f $ROOTDIR) ] && \
-    echo "error: all files will be saved to $ROOTDIR, no other directory is allowed"  && \
+    [ $(readlink -f ${OUTPUTFILE%/*}) != $(readlink -f $FBSMROOTDIR) ] && \
+    echo "error: all files will be saved to $FBSMROOTDIR, no other directory is allowed"  && \
     exit 1
 
-    [ -f $ROOTDIR/${OUTPUTFILE##*/} ] && \
-    echo -e "error: there's already a file named ${OUTPUTFILE##*/} in $ROOTDIR" && \
+    [ -f $FBSMROOTDIR/${OUTPUTFILE##*/} ] && \
+    echo -e "error: there's already a file named ${OUTPUTFILE##*/} in $FBSMROOTDIR" && \
     exit 1
 
-    jq ".shown | .content = \"$(jq .hidden $INPUTFILE | gpg2 --recipient alberrtolarios@gmail.com --encrypt | base64 -w0)\"" $INPUTFILE > $ROOTDIR/${OUTPUTFILE##*/}
+    jq ".shown | .content = \"$(jq .hidden $INPUTFILE | gpg2 --recipient $FBSMRECIPIENT --encrypt | base64 -w0)\"" $INPUTFILE > $FBSMROOTDIR/${OUTPUTFILE##*/}
 
     if [ -n "$CLEANUP" ] ; then
         CLEANFILE=$(jq ".hidden = $(jq '.hidden | to_entries | map(.value = null) | from_entries' $INPUTFILE)" $INPUTFILE | \
